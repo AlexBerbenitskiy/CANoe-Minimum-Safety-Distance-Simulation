@@ -1,0 +1,63 @@
+<scenario name="my scenario" simtime="24,7967479674797" simtimemax="60" version="1" timelinezoom="1" hscrolloffset="0">
+  <routes>
+    <route name="Route1" color="16711680">
+      <points>
+        <point x="48,8528250297219" y="9,12195334662034" />
+        <point x="48,8629266196835" y="9,12849119564512" />
+        <point x="48,8655743193044" y="9,13056192054907" />
+        <point x="48,868088044539" y="9,13277966631306" />
+        <point x="48,8710056029851" y="9,13520212707065" />
+        <point x="48,8731375573434" y="9,13718103867544" />
+        <point x="48,8787690882019" y="9,14188948352836" />
+        <point x="48,8806987723422" y="9,14328836931793" />
+        <point x="48,8835034130596" y="9,14492608926674" />
+        <point x="48,8906369104658" y="9,14867919748279" />
+        <point x="48,8942036773277" y="9,15048751325955" />
+        <point x="48,9000794869813" y="9,15348999983232" />
+        <point x="48,9021204896954" y="9,15430885980671" />
+        <point x="48,9032418842798" y="9,15441121730351" />
+        <point x="48,9043632537025" y="9,1546159322971" />
+        <point x="48,9057985698478" y="9,1545135748003" />
+        <point x="48,9133549455471" y="9,15451357480046" />
+        <point x="48,9148572707487" y="9,15458181313165" />
+        <point x="48,9160456452577" y="9,15488888562204" />
+        <point x="48,918129860896" y="9,15601481808703" />
+        <point x="48,9197665640249" y="9,15683367806142" />
+        <point x="48,9216722466645" y="9,15857375550699" />
+        <point x="48,9232864150785" y="9,16038207128379" />
+        <point x="48,9254609761491" y="9,16358927285019" />
+        <point x="48,9272767741852" y="9,16802476437818" />
+        <point x="48,9295851691606" y="9,17542862331312" />
+        <point x="48,9317370411063" y="9,18238893309549" />
+        <point x="48,9324543111452" y="9,18436784470031" />
+        <point x="48,9331267424478" y="9,1854937771651" />
+        <point x="48,9338888203085" y="9,1868926629547" />
+        <point x="48,935233635214" y="9,18876921706269" />
+        <point x="48,9365335885199" y="9,19027046034909" />
+      </points>
+      <stations>
+        <station name="Vehicle1" offset="0" color="16711680" trackingid="1" length="4" width="2" height="1.5">
+          <attribute name="Speed" trigger="true" defaultvalue="0">
+            <keypoints>
+              <keypoint time="0" value="60" />
+              <keypoint time="9,47" value="30" />
+              <keypoint time="15,08" value="60" />
+              <keypoint time="20,85" value="80" />
+              <keypoint time="24,8" value="60" />
+            </keypoints>
+          </attribute>
+        </station>
+        <station name="Vehicle2" offset="50" color="16711680" trackingid="2" length="4" width="2" height="1.5">
+          <attribute name="Speed" trigger="true" defaultvalue="0">
+            <keypoints>
+              <keypoint time="0" value="60" />
+              <keypoint time="6,1" value="30" />
+              <keypoint time="12,52" value="60" />
+            </keypoints>
+          </attribute>
+        </station>
+      </stations>
+    </route>
+  </routes>
+  <tapes />
+</scenario>

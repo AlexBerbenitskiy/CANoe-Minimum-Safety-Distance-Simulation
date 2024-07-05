@@ -1,0 +1,81 @@
+<car2x-station-manager-data version="1.0" encoding="utf-8">
+  <node device-id="1">
+    <name value="Vehicle2"/>
+    <frame-info>
+      <mac-address value="020000000002"/>
+      <geo-mac value="020000000002"/>
+    </frame-info>
+    <assigned-node db-name="EU_ApplMsg" name="Vehicle2"/>
+    <geo-address value="1000020000000002"/>
+    <latitude value="48.8538"/>
+    <longitude value="9.12257"/>
+    <speed value="10.1"/>
+    <heading value="23"/>
+    <timestamp value="647278014303000"/>
+    <color value="BF3F3F00"/>
+    <trace-highlight value="false"/>
+  </node>
+  <node device-id="2">
+    <name value="Vehicle1"/>
+    <frame-info>
+      <mac-address value="020000000001"/>
+      <geo-mac value="020000000001"/>
+    </frame-info>
+    <assigned-node db-name="EU_ApplMsg" name="Vehicle1"/>
+    <geo-address value="1400020000000001"/>
+    <latitude value="48.8534"/>
+    <longitude value="9.12233"/>
+    <speed value="12.44"/>
+    <heading value="23"/>
+    <timestamp value="647278014303000"/>
+    <color value="3FBF3F00"/>
+    <trace-highlight value="false"/>
+  </node>
+  <node device-id="3">
+    <name value="Vehicle3"/>
+    <frame-info>
+      <mac-address value="020000000003"/>
+      <geo-mac value="020000000003"/>
+    </frame-info>
+    <assigned-node db-name="EU_ApplMsg" name="Vehicle3"/>
+    <geo-address value="1800020000000003"/>
+    <latitude value="48.8234"/>
+    <longitude value="9.09392"/>
+    <speed value="13.88"/>
+    <heading value="264"/>
+    <timestamp value="628885061412000"/>
+    <color value="BFBF3F00"/>
+    <trace-highlight value="false"/>
+  </node>
+  <node device-id="4">
+    <name value="Unknown 4"/>
+    <frame-info>
+      <mac-address value="020000000000"/>
+      <geo-mac value="020000000000"/>
+    </frame-info>
+    <geo-address value="0000020000000000"/>
+    <latitude value="0"/>
+    <longitude value="0"/>
+    <speed value="0"/>
+    <heading value="0"/>
+    <timestamp value="588410519552000"/>
+    <color value="3F3FBF00"/>
+    <trace-highlight value="false"/>
+  </node>
+  <node device-id="5">
+    <name value="DUT"/>
+    <frame-info>
+      <mac-address value="020000000004"/>
+      <geo-mac value="020000000004"/>
+    </frame-info>
+    <assigned-node db-name="EU_ApplMsg" name="DUT"/>
+    <geo-address value="1400020000000004"/>
+    <latitude value="48.8252"/>
+    <longitude value="9.09583"/>
+    <speed value="0"/>
+    <heading value="356.5"/>
+    <timestamp value="628885061412000"/>
+    <color value="BF3FBF00"/>
+    <trace-highlight value="false"/>
+  </node>
+</car2x-station-manager-data>

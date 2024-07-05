@@ -1,0 +1,202 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "..\DataSources_Templates\ASNV_Template_BaseDatatypes.cin"
+  #include "..\DataSources_Templates\ASNV_Template_CAM.cin"
+  #include "..\DataSources_Templates\ASNV_Template_DENM.cin"
+  #include "..\DataSources_Templates\ASNV_Template_MAP.cin"
+  #include "..\DataSources_Templates\ASNV_Template_SPAT.cin"
+  #include "..\DataSources_Templates\ASNV_Template_IVIM.cin"
+  #include "Position.cin"
+}
+
+variables
+{
+  double vehicleCamLong = 0;
+  double vehicleCamLat = 0;
+  long stopVehicle = 0;
+  double bMax = 9.3; //Bmax (9.3)is the maximum longitudinal deceleration of the leading vehicle m/s^2
+  double bMin = 1.6; //Bmin is the following vehicle’s minimum longitudinal deceleration after response time in m/s^2
+  double aMax = 3.8; //amax   is the AV’s maximum longitudinal acceleration during the response time in m/s2
+  double rT = 1.3;   // p = rT is the AVs response time in seconds s
+}
+
+
+
+// On start, callback functions for the most common application messages CAM and DENM are registered.
+// It is possible to do the same with the other application messages if needed.
+
+on start
+{
+  enum CallbackType { OnRx, PreTx };
+  
+  C2xRegisterCallback(OnRx,  "OnRxCAM",    "CAM");
+  C2xRegisterCallback(PreTx, "OnPreTxCAM", "CAM");
+  
+  C2xRegisterCallback(OnRx,  "OnRxDENM",    "DENM");
+  C2xRegisterCallback(PreTx, "OnPreTxDENM", "DENM");
+   @sysvar::distance;
+}
+
+
+
+
+
+
+// Callback function on receiving CAM messages
+void OnRxCAM(long channel, long dir, long radioChannel, long signalStrength, long signalQuality, long packet)
+{
+  struct CAM camPdu;     
+  
+  double camLong;        
+  double camLat;         
+  long camStationType;   
+  double distanceToCam;   
+  long camSpeed;        
+  long vR; //Rear vehicle speed
+  long vF; //Front Vehicle speed
+  double dMin; //Minimum safety distance
+  long camHeading;      
+  long camStationId;
+  
+  
+  if (!API_GetCAMParams(packet, camPdu))
+  {
+    
+    // Retrieve some data from the CAM message
+    
+        camStationId = camPdu.header.stationID;
+        camLong = camPdu.cam.camParameters.basicContainer.referencePosition.longitude / 1e07;
+        camLat = camPdu.cam.camParameters.basicContainer.referencePosition.latitude / 1e07;
+        camHeading = camPdu.cam.camParameters.highFrequencyContainer.basicVehicleContainerHighFrequency.heading.headingValue;
+        vF = camPdu.cam.camParameters.highFrequencyContainer.basicVehicleContainerHighFrequency.speed.speedValue;
+        vR = camPdu.cam.camParameters.highFrequencyContainer.basicVehicleContainerHighFrequency.speed.speedValue;
+        camStationType = camPdu.cam.camParameters.basicContainer.stationType;
+    
+    
+        // Calculate the linear distance to the CAM station whose message was received.
+    
+        distanceToCam = API_PosCalcDistance( vehicleCamLat,  vehicleCamLong, camLat, camLong); 
+    
+        //Convert speed for the equation.
+        vF = vF/1000;
+        vR = vR/1000;
+
+    
+    //dMin calculations
+     dMin = (vR * rT) + (0.5 * aMax * (rT * rT)) + (((rT +aMax) *vR) * ((rT*aMax) * vR) / (2 * bMin))- (vF * vF) / (2 * bMax);
+     dMin = dMin++;
+    
+    //Specifying messages from following car.
+    if ((distanceToCam == 0)){
+      
+      //Updating rear vehicle's speed
+      vR ++;
+     
+      
+    write("Rear Car Speed = %d\n", vR*10);
+    }
+    
+    //Specifying cam messages from leading car
+    if (( distanceToCam != 0 ))
+    {
+      
+      //Updating the panel display
+        @sysvar::distance=distanceToCam;
+      
+      //Updating front vehicle speed
+      vF ++;
+      write("Front Car Speed = %d\n", vF+10); 
+    }
+    
+   
+     //Warn the rear vehicle if it not within the safety distance.
+        if (( distanceToCam < dMin  ))
+        {
+          
+          write (" *** VEHICLE TOO CLOSE --- Be Careful!! *** ");
+        }
+    
+       dMin++;
+        
+     //Updating the panel display
+     @sysvar::safeDistance=dMin;
+  }
+  
+}
+
+
+
+
+// Callback function before sending CAM messages from IL
+void OnPreTxCAM(LONG packet)
+{
+    struct CAM camPdu; 
+  
+    // Save the current vehicle's co-ordinates for future distance calculations.
+  
+    if (!API_GetCAMParams(packet, camPdu))
+     {
+        vehicleCamLong = camPdu.cam.camParameters.basicContainer.referencePosition.longitude / 1e07;
+        vehicleCamLat = camPdu.cam.camParameters.basicContainer.referencePosition.latitude / 1e07;
+        write(" *** Vehicle long = %f lat = %f \n",  vehicleCamLong,  vehicleCamLat );
+     }
+    
+}
+
+// Callback function on receiving DENM messages
+void OnRxDENM(long channel, long dir, long radioChannel, long signalStrength, long signalQuality, long packet)
+{
+  struct DENM denmPdu;
+  int type;
+  int stationId;
+  
+  write(" *** DENM Received ");
+   if (!API_GetDENMparams(packet, denmPdu))
+  {
+    stationId = denmPdu.header.stationID;
+    write(" DENM stationId = %d", stationId);
+    type = denmPdu.denm.situation.eventType.causeCode;
+    write(" DENM Cause Code = %d", type);
+  }
+    
+}
+
+
+
+
+
+// Callback function before sending DENM messages from IL
+void OnPreTxDENM(LONG packet)
+{
+
+}
+
+
+
+on key 'x'
+{
+  
+  /*
+    Example of how to transmit a DENM messaage.  Note that other parameters such as Station Id, relevance area etc. would need to be
+    included in a realistic DENM message.
+  */
+  
+  long packet;
+  double eventPosLat, eventPosLon, eventPosElev;
+
+  eventPosLat = 48.8233831512772;
+  eventPosLon = 9.093631893371;
+  eventPosElev = 305;
+
+  packet = C2xInitPacket("DENM");
+  C2xSetTokenInt(packet, "DENM", "denm.situation.eventType.causeCode", 91); // VehicleBreakDown
+  C2xSetTokenPhys(packet, "DENM", "denm.management.eventPosition.latitude", eventPosLat);
+  C2xSetTokenPhys(packet, "DENM", "denm.management.eventPosition.longitude", eventPosLon);
+  C2xSetTokenPhys(packet, "DENM", "denm.management.eventPosition.altitude.altitudeValue", eventPosElev);
+
+ // C2xApplyPathHistory(packet, eventPosLat, eventPosLon, 305, 800, 20, 1);
+
+  C2xCompletePacket(packet);
+  C2xOutputPacket(packet);
+}
